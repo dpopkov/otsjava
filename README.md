@@ -1,1 +1,1 @@
-# otsjava
+# otsjava - курс "Разработчик Java"
