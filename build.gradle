@@ -27,7 +27,27 @@ allprojects {
     apply plugin: "io.spring.dependency-management"
     dependencyManagement {
         dependencies {
+            imports {
+                mavenBom("org.springframework.boot:spring-boot-dependencies:${Versions.springBootDependencies}")
+            }
             dependency("com.google.guava:guava:${Versions.guava}")
+        }
+    }
+
+    configurations.all {
+        // fail eagerly on version conflict (includes transitive dependencies)
+        // e.g multiple different versions of the same dependency (group and name are equal)
+        resolutionStrategy {
+            failOnVersionConflict()
+        }
+    }
+}
+
+// Print versions from BOM
+task managedVersions {
+    doLast {
+        dependencyManagement.managedVersions.each {
+            println it
         }
     }
 }
