@@ -1,3 +1,16 @@
+# hw 02 - ArrayList
+Написать реализацию ArrayList на основе массива.
+class DiyArrayList<T> implements List<T>
+
+Проверить, что на ней работают методы из java.util.Collections:
+static <T> boolean addAll(Collection<? super T> c, T... elements)
+static <T> void copy(List<? super T> dest, List<? extends T> src)
+static <T> void sort(List<T> list, Comparator<? super T> c)
+
+1) Проверяйте на коллекциях содержащих >= 20 элементов.
+2) Класс должен имплементировать ТОЛЬКО интерфейс List.
+3) Если метод не имплементирован, то он должен выбрасывать исключение UnsupportedOperationException.
+
 # [hw 01 - Gradle](app)
 
 1) Создайте аккаунт на github.com (если еще нет)

@@ -4,3 +4,4 @@
 
 rootProject.name = 'otsjava'
 include 'app'
+include 'hw02arraylist'
