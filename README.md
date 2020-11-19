@@ -2,6 +2,10 @@
 
 [Homeworks](hworks.md)
 
+## lec03 - Collections, Homework 02 - ArrayList
+- Написать реализацию ArrayList на основе массива.
+- Проверить, что на ней работают методы из java.util.Collections.
+
 ## lec02
 - Использование BOM
 - Разрешение конфликтов версий (resolutionStrategy force)

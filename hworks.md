@@ -1,4 +1,5 @@
-# hw 02 - ArrayList
+# [hw 02 - ArrayList](hw02arraylist)
+
 Написать реализацию ArrayList на основе массива.
 class DiyArrayList<T> implements List<T>
 

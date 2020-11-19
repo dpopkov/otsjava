@@ -3,6 +3,7 @@ package learn.otsjava.collections;
 import java.util.*;
 
 public class DiyArrayList<E> implements List<E> {
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     public static final int DEFAULT_INITIAL_CAPACITY = 16;
     private E[] elements;
     private int size;
@@ -13,6 +14,9 @@ public class DiyArrayList<E> implements List<E> {
 
     @SuppressWarnings("unchecked")
     public DiyArrayList(int initialCapacity) {
+        if (initialCapacity < 0 || MAX_ARRAY_SIZE < initialCapacity) {
+            throw new IllegalArgumentException("Invalid initial capacity: " + initialCapacity);
+        }
         elements = (E[]) new Object[initialCapacity];
         size = 0;
     }
@@ -44,7 +48,7 @@ public class DiyArrayList<E> implements List<E> {
      */
     @Override
     public boolean contains(Object o) {
-        throw new UnsupportedOperationException();
+        return indexOf(o) >= 0;
     }
 
     @Override
@@ -64,15 +68,23 @@ public class DiyArrayList<E> implements List<E> {
 
     @Override
     public boolean add(E e) {
-        ensureCapacity();
-        elements[size++] = e;
-        return true;
+        if (ensureCapacity()) {
+            elements[size++] = e;
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private void ensureCapacity() {
+    private boolean ensureCapacity() {
         if (elements.length == size) {
-            elements = Arrays.copyOf(elements, elements.length * 2);
+            int newLength = elements.length * 2;
+            if (newLength > MAX_ARRAY_SIZE) {
+                return false;
+            }
+            elements = Arrays.copyOf(elements, newLength);
         }
+        return true;
     }
 
     @Override
@@ -112,13 +124,16 @@ public class DiyArrayList<E> implements List<E> {
 
     @Override
     public E get(int index) {
-        Objects.checkIndex(index, size);
+        checkIndex(index);
         return elements[index];
     }
 
     @Override
     public E set(int index, E element) {
-        throw new UnsupportedOperationException();
+        checkIndex(index);
+        E oldElement = elements[index];
+        elements[index] = element;
+        return oldElement;
     }
 
     @Override
@@ -133,7 +148,20 @@ public class DiyArrayList<E> implements List<E> {
 
     @Override
     public int indexOf(Object o) {
-        throw new UnsupportedOperationException();
+        if (o == null) {
+            for (int i = 0; i < size; i++) {
+                if (elements[i] == null) {
+                    return i;
+                }
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (o.equals(elements[i])) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -143,12 +171,13 @@ public class DiyArrayList<E> implements List<E> {
 
     @Override
     public ListIterator<E> listIterator() {
-        return new DiyListIterator();
+        return new DiyListIterator(0);
     }
 
     @Override
     public ListIterator<E> listIterator(int index) {
-        throw new UnsupportedOperationException();
+        checkIndex(index);
+        return new DiyListIterator(index);
     }
 
     @Override
@@ -170,12 +199,16 @@ public class DiyArrayList<E> implements List<E> {
         return sb.toString();
     }
 
+    private void checkIndex(int index) {
+        Objects.checkIndex(index, size);
+    }
+
     private class DiyIterator implements Iterator<E> {
-        private int position;
+        private int cursor;
 
         @Override
         public boolean hasNext() {
-            return position < size;
+            return cursor < size;
         }
 
         @Override
@@ -183,19 +216,23 @@ public class DiyArrayList<E> implements List<E> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            return elements[position++];
+            return elements[cursor++];
         }
     }
 
     private class DiyListIterator implements ListIterator<E> {
         private static final int IDX_INVALIDATED = -1;
 
-        private int position;
+        private int cursor;
         private int indexOfReturned = IDX_INVALIDATED;
+
+        public DiyListIterator(int indexOfFirstElement) {
+            this.cursor = indexOfFirstElement;
+        }
 
         @Override
         public boolean hasNext() {
-            return position < size;
+            return cursor < size;
         }
 
         @Override
@@ -203,13 +240,13 @@ public class DiyArrayList<E> implements List<E> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            indexOfReturned = position++;
+            indexOfReturned = cursor++;
             return elements[indexOfReturned];
         }
 
         @Override
         public boolean hasPrevious() {
-            return position > 0;
+            return cursor > 0;
         }
 
         @Override
@@ -217,7 +254,7 @@ public class DiyArrayList<E> implements List<E> {
             if (!hasPrevious()) {
                 throw new NoSuchElementException();
             }
-            indexOfReturned = --position;
+            indexOfReturned = --cursor;
             return elements[indexOfReturned];
         }
 
