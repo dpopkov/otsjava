@@ -6,5 +6,6 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 dependencies {
-    testImplementation 'junit:junit'
+    testImplementation 'org.openjdk.jmh:jmh-core'
+    testAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess'
 }
