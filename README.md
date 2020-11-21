@@ -2,7 +2,10 @@
 
 [Homeworks](hworks.md)
 
-## lec04 - Unsafe
+## lec05 - Testing
+- JUnit5, Mockito
+
+## lec04 - Unsafe, JMH
 - Использование Unsafe для выделения памяти за пределами Heap и доступа к ней.
 - Простейшее (naive) сравнение производительности трех реализаций array list.
 - Использование JMH для сравнения производительности трех реализаций array list.
