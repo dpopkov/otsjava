@@ -1,11 +1,13 @@
 package learn.otsjava.testing.exercise;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
+@DisplayName("MessageBuilder должен")
 class MessageBuilderImplTest {
     private static final String TEMPLATE_NAME = "template";
     private static final String TEMPLATE_TEXT = "Hi!\n %s \n Yours sincerely, %s";
@@ -21,23 +23,26 @@ class MessageBuilderImplTest {
         builder = new MessageBuilderImpl(provider);
     }
 
+    @DisplayName("используя заданный шаблон генерировать из текста и подписи корректное сообщение")
     @Test
-    void buildMessageTest() {
-        when(provider.getMessageTemplate(TEMPLATE_NAME)).thenReturn(TEMPLATE_TEXT);
+    void shouldBuildCorrectMessageUsingGivenTemplateForGivenTextAndSign() {
+        given(provider.getMessageTemplate(TEMPLATE_NAME)).willReturn(TEMPLATE_TEXT);
         String actualMessage = builder.buildMessage(TEMPLATE_NAME, MESSAGE_TEXT, SIGN);
         assertEquals(String.format(TEMPLATE_TEXT, MESSAGE_TEXT, SIGN), actualMessage);
     }
 
+    @DisplayName("получать шаблон у заданного провайдера при построении сообщения")
     @Test
-    void whenBuildMessageThenUsesTemplate() {
-        when(provider.getMessageTemplate(TEMPLATE_NAME)).thenReturn(TEMPLATE_TEXT);
+    void shouldRequestTemplateWhenBuildingMessage() {
+        given(provider.getMessageTemplate(TEMPLATE_NAME)).willReturn(TEMPLATE_TEXT);
         builder.buildMessage(TEMPLATE_NAME, MESSAGE_TEXT, SIGN);
         verify(provider, atLeastOnce()).getMessageTemplate(TEMPLATE_NAME);
     }
 
+    @DisplayName("выбрасывать исключение если провайдер не предоставляет шаблон")
     @Test
-    void whenTemplateNotFoundThenException() {
-        when(provider.getMessageTemplate(TEMPLATE_NAME)).thenReturn("");
+    void shouldThrowExceptionWhenTemplateNotFound() {
+        given(provider.getMessageTemplate(TEMPLATE_NAME)).willReturn("");
         assertThrows(TemplateNotFoundException.class,
                 () -> builder.buildMessage(TEMPLATE_NAME, MESSAGE_TEXT, SIGN));
     }
